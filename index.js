@@ -1,9 +1,31 @@
-const choices = ["rock", "paper", "scissors"];
+const choices = ["rock", "paper", "scissors"];     
+
+
+function game(){
+    bestOfFive();
+}
 
 function playRound(){
     const computerSelection = computerChoice();
-    const playerSelection = playerChoice();
-    
+    const playerSelection = playerChoice();        
+    const winner = checkWinner(playerSelection, computerSelection);
+
+    console.log(winner);
+
+    return {computerSelection, playerSelection, winner};
+}
+
+function playerChoice(){
+    let input = prompt("Type Rock, Paper or scissors.");
+    input = input.toLowerCase();
+    return input;
+}
+
+function computerChoice(){
+    return choices[Math.floor(Math.random() * choices.length)];
+}
+
+function checkWinner(playerSelection, computerSelection){
 
     if(computerSelection === "rock"){
         if(playerSelection === "rock"){
@@ -42,24 +64,22 @@ function playRound(){
     }
 }
 
-function playerChoice(){
-    prompt();
-    if (prompt === "rock"){
-        return playerSelection = "rock";
+function bestOfFive(){
+    let computerScore = 0;
+    let playerScore = 0;
+
+    while(computerScore < 3 && playerScore < 3){
+        const xx = playRound();
+        //console.log(xx);
+
+        if(xx.winner == `You win! ${xx.playerSelection} beats ${xx.computerSelection}`){
+            playerScore++;
+        }else if(xx.winner == `You lose! ${xx.playerSelection} loses to ${xx.computerSelection}`){
+                computerScore++;
+        }
     }
 
-    if (prompt === "paper"){
-        return playerSelection = "paper";
-    }
-
-    if (prompt === "scissors"){
-        return playerSelection = "scissors";
-    }
+    console.log(`Computer ${computerScore} : ${playerScore} Player`);
 }
 
-function computerChoice(){
-    return choices[Math.floor(Math.random() * choices.length)];
-}
-
-
-console.log(playRound(playerChoice(), computerChoice()));       //console displays undefined
+game();
