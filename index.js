@@ -1,133 +1,109 @@
-const choices = ["rock", "paper", "scissors"];     
+const choices = ["rock", "paper", "scissors"];  
+let winners = [];
 
 
 function game(){
     let buttons = document.querySelectorAll('button');
     buttons.forEach((button) =>
         button.addEventListener('click', () => {
-            if(button.id){
-                playRound(button.id);
-            }
+            playRound(button.id);
         })
     );
 }
 
 function playRound(playerChoice){
-    const computerSelection = computerChoice();
-    //const playerSelection = playerChoice();        
+    const wins = checkWins();
+    if(wins >= 5){
+        return;
+    }
+
+    const computerSelection = computerChoice();       
     const winner = checkWinner(playerChoice, computerSelection);
 
     console.log(winner);
+    winners.push(winner);
 
-    //return {computerSelection, playerSelection, winner};
+    updateScore();
+    displayChoices(playerChoice, computerSelection, winner);
+
+    wins;
+    if(wins == 5){
+        gameWinner();
+    }
 }
-
-/*
-// rock button
-const rock = document.querySelector('#rock');
-rock.addEventListener('click', playRound);
-
-// paper button
-const paper = document.querySelector('#paper');
-paper.addEventListener('click', playerChoice);
-
-// scissors button
-const scissors = document.querySelector('#scissors');
-scissors.addEventListener('click', playerChoice);
-*/
-
-/*
-function playerChoice(){
-    console.log("abos edeky et7ally");
-    /*
-    let input = prompt("Type Rock, Paper or scissors.");
-    input = input.toLowerCase();
-    return input;
-    */
-
-    /*
-    let input;
-
-
-    const rock = document.querySelector('#rock');
-    rock.addEventListener('click', () => {
-        input = "rock";
-    });
-
-    const paper = document.querySelector('#paper');
-    rock.addEventListener('click', () => {
-        input = "paper";
-    });
-
-    const scissors = document.querySelector('#scissors');
-    rock.addEventListener('click', () => {
-        input = "scissors   ";
-    });
-
-    return input;
-    */
-//}
-
 
 function computerChoice(){
     return choices[Math.floor(Math.random() * choices.length)];
 }
 
-function checkWinner(playerSelection, computerSelection){
+function checkWinner(choiceP, choiceC){
 
-    if(computerSelection === "rock"){
-        if(playerSelection === "rock"){
-            return `Tie! You both selected ${playerSelection}`;
+    if(choiceC === "rock"){
+        if(choiceP === "rock"){
+            return `Tie!`;
         }
-        if(playerSelection === "paper"){
-            return `You win! ${playerSelection} beats ${computerSelection}`;
+        if(choiceP === "paper"){
+            return `You win!`;
         }
-        if(playerSelection === "scissors"){
-            return `You lose! ${playerSelection} loses to ${computerSelection}`;
+        if(choiceP === "scissors"){
+            return `You lose!`;
         }
     }
 
-    if(computerSelection === "paper"){
-        if(playerSelection === "rock"){
-            return `You lose! ${playerSelection} loses to ${computerSelection}`;
+    if(choiceC === "paper"){
+        if(choiceP === "rock"){
+            return `You lose!`;
         }
-        if(playerSelection === "paper"){
-            return `Tie! You both selected ${playerSelection}`;
+        if(choiceP === "paper"){
+            return `Tie!`;
         }
-        if(playerSelection === "scissors"){
-            return `You win! ${playerSelection} beats ${computerSelection}`;
+        if(choiceP === "scissors"){
+            return `You win!`;
         }
     }
 
-    if(computerSelection === "scissors"){
-        if(playerSelection === "rock"){
-            return `You win! ${playerSelection} beats ${computerSelection}`;
+    if(choiceC === "scissors"){
+        if(choiceP === "rock"){
+            return `You win!`;
         }
-        if(playerSelection === "paper"){
-            return `You lose! ${playerSelection} loses to ${computerSelection}`;
+        if(choiceP === "paper"){
+            return `You lose!`;
         }
-        if(playerSelection === "scissors"){
-            return `Tie! You both selected ${playerSelection}`;
+        if(choiceP === "scissors"){
+            return `Tie!`;
         }
     }
 }
 
-function bestOfFive(){
-    let computerScore = 0;
-    let playerScore = 0;
+function checkWins(){
+    const pWinsCount = winners.filter((item) => item == `You win!`).length;
+    const cWinsCount = winners.filter((item) => item == `You lose!`).length;
+    return Math.max(pWinsCount, cWinsCount);
+}
 
-    while(computerScore < 3 && playerScore < 3){
-        const xx = playRound();
-        //console.log(xx);
+function updateScore(){
+    const pWinsCount = winners.filter((item) => item == `You win!`).length;
+    const cWinsCount = winners.filter((item) => item == `You lose!`).length;
+    const ties = winners.filter((item) => item == `Tie!`).length;
+    document.querySelector('.playerScore').textContent = `Player Score ${pWinsCount}`;
+    document.querySelector('.computerScore').textContent = `Computer Score ${cWinsCount}`;
+    document.querySelector('.tieScore').textContent = `Ties ${ties}`;
+}
 
-        if(xx.winner == `You win! ${xx.playerSelection} beats ${xx.computerSelection}`){
-            playerScore++;
-        }else if(xx.winner == `You lose! ${xx.playerSelection} loses to ${xx.computerSelection}`){
-                computerScore++;
-        }
+function displayChoices(playerChoice, computerSelection, winner){
+    document.querySelector('.playerChoice').textContent = `You chose ${playerChoice}`;
+    document.querySelector('.computerChoice').textContent = `Computer chose ${computerSelection}`;
+    document.querySelector('.round').textContent = `${winner}`;
+}
+
+function gameWinner(){
+    let playerWins = winners.filter((item) => item == `You win!`).length;
+    if(playerWins == 5){
+        document.querySelector('.game').textContent = 'You win the game!'
+    }else{
+        document.querySelector('.game').textContent = 'Computer wins the game!'
     }
 
-    console.log(`Computer ${computerScore} : ${playerScore} Player`);
 }
 
 game();
